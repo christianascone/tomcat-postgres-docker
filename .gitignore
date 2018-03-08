@@ -1,0 +1,3 @@
+postgres-data
+tomcat/webapps/your_webapp
+*.war

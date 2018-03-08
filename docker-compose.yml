@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    image: postgres:9.1
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data # Persistent data
+      - ./db/01-create_db.sql:/docker-entrypoint-initdb.d/01-create_db.sql
+      - ./db/02-create_schema.sql:/docker-entrypoint-initdb.d/02-create_schema.sql
+      - ./db/03-prefill-data.sql:/docker-entrypoint-initdb.d/03-prefill-data.sql
+  apache:
+    build:
+      context: .
+      dockerfile: dockerfile/apache
+    ports:
+      - "90:80"
+  docker-tomcat:
+    build:
+      context: .
+      dockerfile: dockerfile/tomcat
+    volumes:
+      - ./tomcat/webapps:/usr/local/tomcat/webapps:cached # Persistent data
+      - ./tomcat/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml
+      - ./tomcat/catalina.properties:/usr/local/tomcat/conf/catalina.properties
+    ports:
+      - "9090:8080"
+      - "9000:8000"
+    depends_on:
+      - db

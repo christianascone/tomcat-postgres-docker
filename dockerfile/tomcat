@@ -1,0 +1,8 @@
+FROM library/tomcat:8.0-jre8
+
+ENV JPDA_ADDRESS="8000"
+ENV JPDA_TRANSPORT="dt_socket"
+
+RUN chmod -R 0775 /usr/local/tomcat/webapps
+
+CMD ["/usr/local/tomcat/bin/catalina.sh", "jpda", "run"]
